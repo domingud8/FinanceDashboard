@@ -6,4 +6,10 @@ This repository is a Web Application running on an Express.js server (Node web f
 ## Tools
 
 
+|**Fronted Web Dev**| **Backend Web Dev** |
+| :---: | :---: |
+|React.js |Express.js, Node.js | 
+| |PostgressSQL  | 
+
+
 ## Installation 
