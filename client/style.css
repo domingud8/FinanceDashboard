@@ -1,5 +1,6 @@
 body {
     margin: 0px;
+    height: auto;
 }
 header nav {
     display: flex;
@@ -23,11 +24,12 @@ header nav a.active {
 
 .overview-container {
     display: flex;
+    height: auto;
 }
 
 .summary {
     background-color: rgb(167, 215, 218);
-    height: 100 vh;
+    height: auto;
     width: 25vw;
 }
 

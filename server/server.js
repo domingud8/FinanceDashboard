@@ -7,8 +7,9 @@ const {
     addTransaction,
     removeTransaction,
     getDataByIdByMonth,
-    getDataGroupByPayeeIntervalTime,
+    getDataGroupByCategoryMonth,
     updateTransaction,
+    getDataGroupByPayeeCategoryMonth,
 } = require("./db");
 const cookieSession = require("cookie-session");
 app.use(compression());
@@ -159,18 +160,43 @@ app.delete("/api/transactions", (request, response) => {
         });
 });
 
-app.get("/api/groupby", (request, response) => {
-    const account_id = 1; // request.session.account_id = 1;
+app.post("/api/groupByCategory", (request, response) => {
+    const account_id = USER_ID; // request.session.account_id = 1;
     /*if (!request.session.account_id) {
         response.json(null);
         return;
     }*/
     //const initial_date = "2022-01-05";
     //const final_date = "2022-01-08";
-    const { initial_date, final_date } = request.body;
-    getDataGroupByPayeeIntervalTime({
-        initial_date,
-        final_date,
+
+    const { month, year } = request.body;
+    console.log(month, year);
+    getDataGroupByCategoryMonth({
+        month,
+        year,
+        account_id,
+    })
+        .then((data) => {
+            response.json(data);
+        })
+        .catch((error) => {
+            console.log("[error getting data]", error);
+            response.status(500).json({ error_message: "Error getting data" });
+        });
+});
+
+app.post("/api/groupByPayeeCategory", (request, response) => {
+    const account_id = USER_ID; // request.session.account_id = 1;
+    /*if (!request.session.account_id) {
+        response.json(null);
+        return;
+    }*/
+
+    const { month, year } = request.body;
+    console.log(month, year);
+    getDataGroupByPayeeCategoryMonth({
+        month,
+        year,
         account_id,
     })
         .then((data) => {

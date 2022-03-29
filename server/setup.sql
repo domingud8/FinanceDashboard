@@ -18,7 +18,7 @@ CREATE TABLE transactions (
     id SERIAL PRIMARY KEY,
     account_id INTEGER NOT NULL REFERENCES account (id),
     payee  VARCHAR ,
-    date   DATE NOT NULL,
+    date_trans   DATE NOT NULL,
     amount NUMERIC NOT NULL,
     group VARCHAR,
     category VARCHAR,
@@ -32,3 +32,21 @@ CREATE TABLE income (
     amount NUMERIC(10,2) NOT NULL,
     category  VARCHAR
 );
+
+
+
+INSERT INTO transactions ( 
+    account_id,
+	amount,
+	category,
+	date_trans
+) SELECT 
+  1,
+  ROUND((random()*100)::numeric , 2 ), -- for integer
+  (ARRAY['housing','transportation','food','utilities','insurance','medical','personal spending','hobbies'])[round(7*random())+1], -- for char/enum
+  DATE(timestamp '2021-01-01 20:00:00' +
+       random() * (timestamp '2021-01-30 20:00:00' -
+                   timestamp '2021-01-01 10:00:00'))
+FROM generate_series(1,100);
+
+

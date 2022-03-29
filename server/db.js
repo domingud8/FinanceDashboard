@@ -86,15 +86,14 @@ function getDataByIdByMonth({ month, account_id }) {
         });
 }
 
-function getDataGroupByPayeeIntervalTime({
-    initial_date,
-    final_date,
-    account_id,
-}) {
+function getDataGroupByCategoryMonth({ month, year, account_id }) {
     return db
         .query(
-            `SELECT payee, SUM(amount) AS amount FROM transactions WHERE date_trans between $1 AND $2 AND account_id=$3 GROUP BY payee; `,
-            [initial_date, final_date, account_id]
+            ` SELECT category, SUM(amount) AS amount FROM transactions
+ WHERE (SELECT EXTRACT(MONTH FROM date_trans))=$1 AND (SELECT EXTRACT(YEAR FROM date_trans))=$2 AND account_id=$3
+GROUP BY category;
+ `,
+            [month, year, account_id]
         )
         .then((data) => {
             return data.rows;
@@ -133,14 +132,29 @@ function updateTransaction({
         });
 }
 
+function getDataGroupByPayeeCategoryMonth({ month, year, account_id }) {
+    return db
+        .query(
+            ` SELECT payee, category, SUM(amount) AS amount FROM transactions
+ WHERE (SELECT EXTRACT(MONTH FROM date_trans))=$1 AND (SELECT EXTRACT(YEAR FROM date_trans))=$2 AND account_id=$3
+GROUP BY payee, category;
+ `,
+            [month, year, account_id]
+        )
+        .then((data) => {
+            return data.rows;
+        });
+}
+
 module.exports = {
     getDataById,
     getAccountById,
     addTransaction,
     removeTransaction,
     getDataByIdByMonth,
-    getDataGroupByPayeeIntervalTime,
+    getDataGroupByCategoryMonth,
     updateTransaction,
+    getDataGroupByPayeeCategoryMonth,
 };
 
 /*`SELECT id, payee, category, (SELECT EXTRACT(DAY FROM date_trans) AS Day), (SELECT EXTRACT(MONTH FROM date_trans) AS Month), SUM(amount) AS amount_t, group_name, category, description  FROM transactions WHERE account_id=$1 GROUP BY Payee, id ORDER BY Month, Day `;*/

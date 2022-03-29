@@ -30,7 +30,7 @@ import {
 
 import TableWithData from "./TableWithData";
 
-export default function GeneralTable() {
+export default function GeneralTable({ onSelectMonth }) {
     const classes = useStyles();
     const [month, setMonth] = useState(null);
     const [data, setData] = useState([]);
@@ -69,6 +69,7 @@ export default function GeneralTable() {
     function UploadDataByDate(event) {
         event.preventDefault();
         setMonth(event.target.month.value);
+        onSelectMonth(event.target.month.value);
         fetch("/api/transactions/month", {
             method: "POST",
             body: JSON.stringify({

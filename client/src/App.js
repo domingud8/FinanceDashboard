@@ -4,7 +4,14 @@ import Summary from "./Summary";
 import Dashboard from "./Dashboard";
 import { BrowserRouter, NavLink, Switch, Route } from "react-router-dom";
 import TableAddData from "./TableAddData";
+import { useState } from "react";
+
 export default function App() {
+    const [month, setMonth] = useState("");
+
+    function onSelectMonth(month) {
+        setMonth(month);
+    }
     return (
         <div className="App">
             <BrowserRouter>
@@ -23,10 +30,12 @@ export default function App() {
                         <Route path="/" exact>
                             <div className="overview-container">
                                 <div className="summary">
-                                    <Summary />
+                                    <Summary month={month} />
                                 </div>
                                 <div className="general-table">
-                                    <GeneralTable />
+                                    <GeneralTable
+                                        onSelectMonth={onSelectMonth}
+                                    />
                                     <br /> <br />
                                     <TableAddData />
                                 </div>
