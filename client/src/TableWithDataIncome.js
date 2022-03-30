@@ -22,7 +22,7 @@ import DialogTitle from "@material-ui/core/DialogTitle";
 
 import TableCellCustomized from "./TableCellCustomized";
 
-export default function TableWithData({
+export default function TableWithDataIncome({
     classes,
     data,
     inEditMode,
@@ -31,12 +31,9 @@ export default function TableWithData({
     onUpdate,
 }) {
     const [id, setId] = useState(null);
-    const [payee, setPayee] = useState(null);
     const [date_trans, setDateTrans] = useState(null);
     const [amount, setAmount] = useState(null);
     const [category, setCategory] = useState(null);
-    const [group_name, setGroupName] = useState(null);
-    const [description, setDescription] = useState(null);
 
     const [showConfirmSave, setShowConfirmSave] = useState(false);
     const [showConfirmDelete, setShowConfirmDelete] = useState(false);
@@ -58,10 +55,6 @@ export default function TableWithData({
     };
 
     function getInputFromChild(input, cell) {
-        if (cell === "payee") {
-            setPayee(input);
-            return;
-        }
         if (cell === "date_trans") {
             setDateTrans(input);
             return;
@@ -74,38 +67,25 @@ export default function TableWithData({
             setCategory(input);
             return;
         }
-        if (cell === "group_name") {
-            setGroupName(input);
-            return;
-        }
-        if (cell === "description") {
-            setDescription(input);
-            return;
-        }
     }
     function OnClickEditIcon({ row, row_id }) {
         setInEditMode({ status: true, rowKey: row_id });
         setId(row.id);
-        setPayee(row.payee);
         setDateTrans(row.date);
         setAmount(row.amount);
         setCategory(row.category);
-        setGroupName(row.group_name);
-        setDescription(row.description);
     }
 
     function onSaveData() {
+        console.log("onSave");
         const modified_row = {
             id,
-            payee,
             date_trans,
             amount,
             category,
-            group_name,
-            description,
         };
 
-        fetch("/api/transactions", {
+        fetch("/api/income", {
             method: "PUT",
             body: JSON.stringify(modified_row),
             headers: {
@@ -114,22 +94,20 @@ export default function TableWithData({
         })
             .then((response) => response.json())
 
-            .then(() => {
+            .then((d) => {
+                console.log(d);
                 setInEditMode({ status: !inEditMode.status, rowKey: null });
                 setId(null);
-                setPayee(null);
                 setDateTrans(null);
                 setAmount(null);
                 setCategory(null);
-                setGroupName(null);
-                setDescription(null);
                 setShowConfirmSave(false);
                 onUpdate();
             });
     }
 
     function onRemoveData() {
-        fetch("/api/transactions", {
+        fetch("/api/income", {
             method: "DELETE",
             body: JSON.stringify({ id }),
             headers: {
@@ -141,12 +119,9 @@ export default function TableWithData({
             .then(() => {
                 setInEditMode({ status: !inEditMode.status, rowKey: null });
                 setId(null);
-                setPayee(null);
                 setDateTrans(null);
                 setAmount(null);
                 setCategory(null);
-                setGroupName(null);
-                setDescription(null);
                 setShowConfirmDelete(false);
                 onUpdate();
             });
@@ -154,12 +129,10 @@ export default function TableWithData({
     function onCancelModify() {
         setInEditMode({ status: !inEditMode.status, rowKey: null });
         setId(null);
-        setPayee(null);
+
         setDateTrans(null);
         setAmount(null);
         setCategory(null);
-        setGroupName(null);
-        setDescription(null);
     }
     return (
         <Table style={{ marginTop: "30px" }} className={classes.table}>
@@ -185,15 +158,6 @@ export default function TableWithData({
                                 classes={classes}
                                 inEditMode={inEditMode}
                                 index={index}
-                                row_value={row.payee}
-                                cell="payee"
-                                id={row.id}
-                                getInputFromChild={getInputFromChild}
-                            />
-                            <TableCellCustomized
-                                classes={classes}
-                                inEditMode={inEditMode}
-                                index={index}
                                 row_value={row.date}
                                 cell="date"
                                 getInputFromChild={getInputFromChild}
@@ -214,44 +178,28 @@ export default function TableWithData({
                                 cell="category"
                                 getInputFromChild={getInputFromChild}
                             />
-                            <TableCellCustomized
-                                classes={classes}
-                                inEditMode={inEditMode}
-                                index={index}
-                                row_value={row.group_name}
-                                cell="group_name"
-                                getInputFromChild={getInputFromChild}
-                            />
-                            <TableCellCustomized
-                                classes={classes}
-                                inEditMode={inEditMode}
-                                index={index}
-                                row_value={row.description}
-                                cell="description"
-                                getInputFromChild={getInputFromChild}
-                            />
                             <TableCell className={classes.tableCell}>
                                 {inEditMode.status &&
                                 inEditMode.rowKey === index ? (
                                     <div>
                                         <DeleteForeverIcon
                                             style={{ paddingRight: "8px" }}
-                                            onClick={() => handleDelete()}
+                                            onClick={handleDelete}
                                         />
                                         <SaveAltIcon
                                             style={{ paddingRight: "8px" }}
-                                            onClick={() => handleSave()}
+                                            onClick={handleSave}
                                         />
                                         <CancelIcon
                                             style={{ paddingRight: "8px" }}
-                                            onClick={() => onCancelModify()}
+                                            onClick={onCancelModify}
                                         />
                                     </div>
                                 ) : (
                                     <EditIcon
                                         onClick={() =>
                                             OnClickEditIcon({
-                                                row: row,
+                                                row,
                                                 row_id: index,
                                             })
                                         }

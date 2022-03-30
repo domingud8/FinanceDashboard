@@ -50,27 +50,15 @@ const useStyles = makeStyles({
 });
 
 const columns = [
-    { title: "Payee", field: "payee" },
     { title: "Date", field: "date" },
     { title: "Amount", field: "amount", type: "numeric" },
     { title: "Category", field: "category" },
-    { title: "Group", field: "group" },
-    { title: "Description", field: "description" },
     { title: "Action", field: "Action" },
 ];
 
-const group = ["living", "year payment", "taxes"];
-const categories = [
-    "housing",
-    "transportation",
-    "food",
-    "utilities",
-    "insurance",
-    "medical",
-    "personal spending",
-    "hobbies",
-];
-function TableAddData({ onUpdate }) {
+const categories = ["salary"];
+
+export default function TableAddDataIncome({ onUpdate }) {
     const classes = useStyles();
     const [rows, setRows] = useState([]);
     // Initial states
@@ -78,20 +66,14 @@ function TableAddData({ onUpdate }) {
     const [disable, setDisable] = useState(true);
     const [showConfirm, setShowConfirm] = useState(false);
 
-    const [defaultValue, setDefaultValue] = useState("food");
-    const [defaultValueGroup, setDefaultValueGroup] = useState("living");
-
     const handleAdd = () => {
         setRows([
             ...rows,
             {
                 id: rows.length + 1,
-                payee: "",
                 date_trans: "",
                 amount: "",
-                group_name: "",
                 category: "",
-                description: "",
             },
         ]);
         setEdit(true);
@@ -105,7 +87,7 @@ function TableAddData({ onUpdate }) {
         setEdit(!isEdit);
 
         rows.map((row) => {
-            fetch("/api/transactions", {
+            fetch("/api/income", {
                 method: "POST",
                 body: JSON.stringify(row),
                 headers: { "Content-Type": "application/json" },
@@ -127,12 +109,6 @@ function TableAddData({ onUpdate }) {
         event.preventDefault();
         setDisable(false);
         const { name, value } = event.target;
-        if (name === "category") {
-            setDefaultValue(event.target.value);
-        }
-        if (name === "group_name") {
-            setDefaultValueGroup(event.target.value);
-        }
         const list = [...rows];
         list[index][name] = value;
         setRows(list);
@@ -158,7 +134,7 @@ function TableAddData({ onUpdate }) {
                 <div>
                     <Button onClick={handleAdd}>
                         <AddBoxIcon onClick={handleAdd} />
-                        ADD DATA
+                        ADD DATA INCOME
                     </Button>
                     {rows.length !== 0 && (
                         <div>
@@ -184,7 +160,7 @@ function TableAddData({ onUpdate }) {
                 <div>
                     <Button onClick={handleAdd}>
                         <AddBoxIcon onClick={handleAdd} />
-                        ADD DATA
+                        ADD DATA INCOME
                     </Button>
                 </div>
             )}
@@ -247,17 +223,6 @@ function TableAddData({ onUpdate }) {
                                     <TableCell className={classes.tableCell}>
                                         <input
                                             className={classes.inputCell}
-                                            value={row.payee}
-                                            name="payee"
-                                            onChange={(e) =>
-                                                handleInputChange(e, i)
-                                            }
-                                            required
-                                        />
-                                    </TableCell>
-                                    <TableCell className={classes.tableCell}>
-                                        <input
-                                            className={classes.inputCell}
                                             type="date"
                                             value={row.date_trans}
                                             name="date_trans"
@@ -285,8 +250,14 @@ function TableAddData({ onUpdate }) {
                                             onChange={(e) =>
                                                 handleInputChange(e, i)
                                             }
-                                            value={defaultValue}
                                         >
+                                            <option
+                                                selected={true}
+                                                value=""
+                                                disabled="disabled"
+                                            >
+                                                Select a category
+                                            </option>
                                             {categories.map((category, c) => {
                                                 return (
                                                     <option
@@ -297,46 +268,10 @@ function TableAddData({ onUpdate }) {
                                                     </option>
                                                 );
                                             })}
-                                            <option value="">
-                                                None of the above
-                                            </option>
+                                            <option value="">Other</option>
                                         </select>
                                     </TableCell>
 
-                                    <TableCell className={classes.tableCell}>
-                                        <select
-                                            className={classes.selectCell}
-                                            name="group_name"
-                                            onChange={(e) =>
-                                                handleInputChange(e, i)
-                                            }
-                                            value={defaultValueGroup}
-                                        >
-                                            {group.map((group, g) => {
-                                                return (
-                                                    <option
-                                                        key={g}
-                                                        value={group}
-                                                    >
-                                                        {group}
-                                                    </option>
-                                                );
-                                            })}
-                                            <option value="">
-                                                None of the above
-                                            </option>
-                                        </select>
-                                    </TableCell>
-                                    <TableCell className={classes.tableCell}>
-                                        <input
-                                            className={classes.inputCell}
-                                            value={row.description}
-                                            name="description"
-                                            onChange={(e) =>
-                                                handleInputChange(e, i)
-                                            }
-                                        />
-                                    </TableCell>
                                     <TableCell className={classes.tableCell}>
                                         <Button
                                             onClick={(e) => handleRemove(e, i)}
@@ -355,5 +290,3 @@ function TableAddData({ onUpdate }) {
         </div>
     );
 }
-
-export default TableAddData;

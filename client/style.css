@@ -115,3 +115,81 @@ footer {
 .table {
     font-size: 50px;
 }
+
+.text-uppercase {
+    font-size: 25px;
+    text-transform: capitalize;
+    color: rgb(2, 64, 66);
+}
+
+/*  Year Dashboard */
+
+.yearDash {
+    margin-top: 50px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+
+.formYearSelection {
+    background-color: rgb(146, 193, 196);
+    height: 80px;
+    width: 50%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    border-radius: 20px;
+}
+
+.formYearSelection > form {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: left;
+}
+
+.formYearSelection > form > input {
+    height: 30px;
+    border-radius: 10px;
+    padding: 2px;
+}
+
+.formYearSelection > form > button {
+    text-align: center;
+    margin: 10px;
+    padding: 13px;
+    height: 40px;
+    color: white;
+    box-sizing: border-box;
+    appearance: none;
+    background-color: rgb(2, 64, 66);
+    border: 1px solid rgb(2, 64, 66);
+    border-radius: 0.6em;
+    cursor: pointer;
+    display: flex;
+    align-self: center;
+    font-size: 1rem;
+    line-height: 1;
+    text-decoration: none;
+    text-align: center;
+    text-transform: uppercase;
+    font-family: "Montserrat", sans-serif;
+    font-weight: 700;
+    transition: box-shadow 300ms ease-in-out, color 300ms ease-in-out;
+}
+
+.YearCapital {
+    height: 30vh;
+    background-color: aliceblue;
+    width: 100%;
+    margin-top: 20px;
+}
+
+.YearPlots {
+    min-height: 50vh;
+    background-color: rgb(158, 188, 214);
+    width: 100%;
+    margin-top: 10px;
+}

@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import Plot from "react-plotly.js";
 
-export default function OtherUserProfile({ month }) {
+export default function Summary({ month, update }) {
     ///for the var-cahr plot
     const [keys, setKeys] = useState([]);
     const [yValues, setYValues] = useState([]);
@@ -11,6 +11,14 @@ export default function OtherUserProfile({ month }) {
     const [payeesParents, setPayeesParents] = useState([]);
     const [valuesPayees, setValuesPayees] = useState([]);
     const [labelMonth, setLabelMonth] = useState([]);
+
+    const [totalIncome, setTotalIncome] = useState(null);
+    const [totalExpenses, setTotalExpenses] = useState(null);
+    const [total, setTotal] = useState(null);
+    const [totalSave, setTotalSave] = useState(null);
+
+    const xValue = ["Income", "Expenses", "Savings/Lost"];
+    const [yValue, setYValue] = useState([]);
 
     useEffect(() => {
         const date = month.split("-");
@@ -36,9 +44,9 @@ export default function OtherUserProfile({ month }) {
                             labelMonthInternal.push("Month");
                         })
                     ).then(() => {
-                        setKeys(keysInternal);
                         setYValues(valuesInternal);
                         setLabelMonth(labelMonthInternal);
+                        setKeys(keysInternal);
                     });
                 });
 
@@ -68,15 +76,38 @@ export default function OtherUserProfile({ month }) {
                         setPayeesParents(parentsPayeeInternal);
                     });
                 });
+
+            fetch("/api/totalIncome/month", {
+                method: "POST",
+                body: JSON.stringify({ month: monthPart, year: yearPart }),
+                headers: { "Content-Type": "application/json" },
+            })
+                .then((response) => {
+                    return response.json();
+                })
+                .then((data) => {
+                    setTotalIncome(data.total);
+                });
+
+            fetch("/api/totalExpenses/month", {
+                method: "POST",
+                body: JSON.stringify({ month: monthPart, year: yearPart }),
+                headers: { "Content-Type": "application/json" },
+            })
+                .then((response) => {
+                    return response.json();
+                })
+                .then((data) => {
+                    setTotalExpenses(data.total);
+                });
         }
-    }, [month]);
+    }, [month, update]);
 
     useEffect(() => {
-        console.log("payees", payees);
-        console.log("valuesPayees", valuesPayees);
-        console.log("payeesParents", payeesParents);
-        console.log("LabelMonth", labelMonth);
-    }, [payees, valuesPayees, payeesParents, labelMonth]);
+        setTotal(Math.max(totalIncome, totalExpenses));
+        setTotalSave(totalIncome - totalExpenses);
+        setYValue([totalIncome, totalExpenses, totalSave]);
+    }, [totalIncome, totalExpenses, totalSave]);
 
     return (
         <div className="summary">
@@ -104,7 +135,43 @@ export default function OtherUserProfile({ month }) {
                             title: "Bar Char Horizontal Plot",
                         }}
                     />
+                    <Plot
+                        data={[
+                            {
+                                type: "bar",
+                                x: xValue,
+                                y: yValue,
 
+                                marker: {
+                                    color: [
+                                        "rgba(158,202,225,0.5)",
+                                        "rgba(255,0,0,0.5)",
+                                        "rgba(255,140,0,0.7)",
+                                    ],
+                                    line: {
+                                        color: [
+                                            "rgb(158,202,225)",
+                                            "rgb(255,0,0)",
+                                            "rgb(255,140,0)",
+                                        ],
+                                        width: 1.5,
+                                    },
+                                },
+                            },
+                        ]}
+                        layout={{
+                            width: 600,
+                            height: 400,
+                            title: "A plot",
+                        }}
+                    />
+                </div>
+            ) : (
+                <div></div>
+            )}
+
+            {total ? (
+                <div>
                     <Plot
                         data={[
                             {
@@ -114,7 +181,7 @@ export default function OtherUserProfile({ month }) {
 
                                 parents: ["", ...labelMonth, ...payeesParents],
 
-                                values: [7000, ...yValues, ...valuesPayees],
+                                values: [total, ...yValues, ...valuesPayees],
 
                                 outsidetextfont: { size: 20, color: "#377eb8" },
                                 leaf: { opacity: 0.4 },
@@ -132,10 +199,7 @@ export default function OtherUserProfile({ month }) {
                     />
                 </div>
             ) : (
-                <div>
-                    {" "}
-                    Selected Month {month} {keys.length}{" "}
-                </div>
+                <div></div>
             )}
         </div>
     );

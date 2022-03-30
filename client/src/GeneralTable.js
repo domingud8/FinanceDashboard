@@ -7,6 +7,7 @@ const useStyles = makeStyles({
         fontSize: "40pt",
         backgroundColor: "rgb(176, 213, 216)",
     },
+
     tableCell: {
         textAlign: "center",
         padding: "12px 12px 12px 7px",
@@ -18,23 +19,45 @@ const useStyles = makeStyles({
         fontSize: "20px",
         width: "90%",
     },
+    tableBody: {
+        display: "block",
+        maxHeight: "500px",
+        overflow: "auto",
+    },
+    tableHead: {
+        display: "table",
+        width: "100%",
+        tableLayout: "fixed",
+    },
+    tableRow: {
+        display: "table",
+        width: "100%",
+        tableLayout: "fixed",
+    },
 });
 
-import {
-    Table,
-    TableBody,
-    TableCell,
-    TableHead,
-    TableRow,
-} from "@material-ui/core";
-
 import TableWithData from "./TableWithData";
+import TableWithDataIncome from "./TableWithDataIncome";
 
-export default function GeneralTable({ onSelectMonth }) {
+import TableWOData from "./TableWOData";
+
+export default function GeneralTable({
+    onSelectMonth,
+    defaultMonth,
+    onUpdate,
+    update,
+}) {
     const classes = useStyles();
-    const [month, setMonth] = useState(null);
+    const [month, setMonth] = useState(defaultMonth);
+
     const [data, setData] = useState([]);
     const [inEditMode, setInEditMode] = useState({
+        status: false,
+        rowKey: null,
+    });
+
+    const [dataIncome, setDataIncome] = useState([]);
+    const [inEditModeIncome, setInEditModeIncome] = useState({
         status: false,
         rowKey: null,
     });
@@ -48,6 +71,46 @@ export default function GeneralTable({ onSelectMonth }) {
         { title: "Description", field: "description" },
         { title: "Action", field: "Action" },
     ];
+
+    const columnsIncome = [
+        { title: "Date", field: "date" },
+        { title: "Amount", field: "amount", type: "numeric" },
+        { title: "Category", field: "category" },
+    ];
+
+    useEffect(() => {
+        fetch("/api/transactions/month", {
+            method: "POST",
+            body: JSON.stringify({
+                month: defaultMonth,
+            }),
+            headers: {
+                "Content-type": "application/json",
+            },
+        })
+            .then((response) => response.json())
+
+            .then((data) => {
+                setData(data);
+                onUpdate();
+            });
+
+        fetch("/api/income/month", {
+            method: "POST",
+            body: JSON.stringify({
+                month: defaultMonth,
+            }),
+            headers: {
+                "Content-type": "application/json",
+            },
+        })
+            .then((response) => response.json())
+
+            .then((data) => {
+                setDataIncome(data);
+                onUpdate();
+            });
+    }, []);
 
     useEffect(() => {
         fetch("/api/transactions/month", {
@@ -63,8 +126,28 @@ export default function GeneralTable({ onSelectMonth }) {
 
             .then((data) => {
                 setData(data);
+
+                onUpdate();
             });
-    }, [inEditMode]);
+    }, [inEditMode, update, month]);
+
+    useEffect(() => {
+        fetch("/api/income/month", {
+            method: "POST",
+            body: JSON.stringify({
+                month: month,
+            }),
+            headers: {
+                "Content-type": "application/json",
+            },
+        })
+            .then((response) => response.json())
+
+            .then((data) => {
+                setDataIncome(data);
+                onUpdate();
+            });
+    }, [inEditModeIncome, update, month]);
 
     function UploadDataByDate(event) {
         event.preventDefault();
@@ -83,6 +166,23 @@ export default function GeneralTable({ onSelectMonth }) {
 
             .then((data) => {
                 setData(data);
+                onUpdate();
+            });
+
+        fetch("/api/income/month", {
+            method: "POST",
+            body: JSON.stringify({
+                month: event.target.month.value,
+            }),
+            headers: {
+                "Content-type": "application/json",
+            },
+        })
+            .then((response) => response.json())
+
+            .then((data) => {
+                setDataIncome(data);
+                onUpdate();
             });
     }
 
@@ -95,7 +195,16 @@ export default function GeneralTable({ onSelectMonth }) {
             style={{ maxWidth: "100%" }}
             className="container-form-transactions"
         >
-            <p> Transactions </p>
+            {month ? (
+                <div>
+                    Your ar currently watching the data for month: {month}
+                </div>
+            ) : (
+                <div>
+                    Your ar currently watching the data for month:
+                    {defaultMonth}
+                </div>
+            )}
             <div className="form-data-selection">
                 <form
                     onSubmit={(event) => {
@@ -105,6 +214,7 @@ export default function GeneralTable({ onSelectMonth }) {
                     <input
                         type="month"
                         name="month"
+                        defaultValue={defaultMonth}
                         onChange={(event) => onChangeDateInput(event)}
                         required
                     />
@@ -114,6 +224,7 @@ export default function GeneralTable({ onSelectMonth }) {
                 </form>
             </div>
             <div>
+                <p className="text-uppercase">Transactions</p>
                 {data.length ? (
                     <TableWithData
                         classes={classes}
@@ -121,39 +232,33 @@ export default function GeneralTable({ onSelectMonth }) {
                         inEditMode={inEditMode}
                         setInEditMode={setInEditMode}
                         columns={columns}
+                        onUpdate
                     />
                 ) : (
-                    <Table
-                        style={{ marginTop: "30px" }}
-                        className={classes.table}
-                    >
-                        <TableHead>
-                            <TableRow>
-                                {columns.map((column, index) => {
-                                    return (
-                                        <TableCell
-                                            key={index}
-                                            className={classes.tableCell}
-                                        >
-                                            {column.title}
-                                        </TableCell>
-                                    );
-                                })}
-                            </TableRow>
-                        </TableHead>
-                        <TableBody>
-                            <TableRow
-                                style={{
-                                    height: "30px",
-                                }}
-                            >
-                                <TableCell colSpan={6}>
-                                    NO DATA YET, PLEASE GET THE DATA FOR
-                                    SPECIFIC MONTH !!
-                                </TableCell>
-                            </TableRow>
-                        </TableBody>
-                    </Table>
+                    <div>
+                        <TableWOData classes={classes} columns={columns} />
+                    </div>
+                )}
+            </div>
+
+            <div>
+                <p className="text-uppercase">Income</p>
+                {dataIncome.length ? (
+                    <TableWithDataIncome
+                        classes={classes}
+                        data={dataIncome}
+                        inEditMode={inEditModeIncome}
+                        setInEditMode={setInEditModeIncome}
+                        columns={columnsIncome}
+                        onUpdate
+                    />
+                ) : (
+                    <div>
+                        <TableWOData
+                            classes={classes}
+                            columns={columnsIncome}
+                        />
+                    </div>
                 )}
             </div>
         </div>
