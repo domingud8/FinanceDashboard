@@ -77,13 +77,6 @@ app.post("/api/income/month", (request, response) => {
 app.put("/api/income", (request, response) => {
     const account_id = USER_ID; //request.session.account_id
     const { id, date_trans, amount, category } = request.body;
-    console.log("UPDATING DATA INCOME", {
-        account_id,
-        id,
-        date_trans,
-        amount,
-        category,
-    });
     updateIncome({
         account_id,
         id,
@@ -92,7 +85,6 @@ app.put("/api/income", (request, response) => {
         category,
     })
         .then((data) => {
-            console.log("updated data", data);
             return response.status(200).json(data);
         })
         .catch((error) => {
@@ -157,7 +149,7 @@ app.post("/api/income", (request, response) => {
 app.post("/api/totalIncome/month", (request, response) => {
     const account_id = USER_ID; //request.session.account_id
     const { month, year } = request.body;
-    console.log("/api/totalIncome/month", month, year);
+
     getTotalIncomeMonth({
         account_id,
         month,
@@ -312,7 +304,7 @@ app.post("/api/groupByCategory", (request, response) => {
     //const final_date = "2022-01-08";
 
     const { month, year } = request.body;
-    console.log(month, year);
+
     getDataGroupByCategoryMonth({
         month,
         year,
@@ -436,7 +428,6 @@ app.post("/api/category/year/payee", (request, response) => {
         category: category,
     })
         .then((data) => {
-            console.log(data);
             response.json(data);
         })
         .catch((error) => {

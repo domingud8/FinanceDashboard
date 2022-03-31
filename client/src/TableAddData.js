@@ -153,7 +153,7 @@ function TableAddData({ onUpdate }) {
     };
 
     return (
-        <div>
+        <div className="TableAddData">
             {isEdit ? (
                 <div>
                     <Button onClick={handleAdd}>

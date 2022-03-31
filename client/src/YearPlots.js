@@ -188,8 +188,8 @@ export default function YearPlots({ year }) {
         setDefaultValue(event.target.value);
     }
     return (
-        <div>
-            <div>
+        <div className="YearPlotsContainer">
+            <div className="YearPlotsByCategory">
                 <form
                     onSubmit={(event) => {
                         onSelectCategory(event);
@@ -210,8 +210,8 @@ export default function YearPlots({ year }) {
                             );
                         })}
                     </select>
-                    <button className="btn" type="submit">
-                        Get data
+                    <button className="btn " type="submit">
+                        Get data by Category
                     </button>
                 </form>
                 <Plot
@@ -228,7 +228,19 @@ export default function YearPlots({ year }) {
                             marker: { color: "red" },
                         },
                     ]}
-                    layout={{ width: 600, height: 400, margin: 0, padding: 0 }}
+                    layout={{
+                        autosize: false,
+                        width: 800,
+                        height: 500,
+                        margin: 0,
+                        padding: 0,
+                        font: { size: 18 },
+                        yaxis: {
+                            margin: 100,
+                            title: "&#8364;",
+                            titlefont: { size: 20 },
+                        },
+                    }}
                 />
 
                 <Plot
@@ -241,38 +253,24 @@ export default function YearPlots({ year }) {
                             type: "pie",
                         },
                     ]}
-                    layout={{ width: 600, height: 400, margin: 0, padding: 0 }}
+                    layout={{
+                        autosize: false,
+                        width: 500,
+                        height: 400,
+                        margin: 0,
+                        padding: 0,
+                        font: { size: 18 },
+                        yaxis: {
+                            margin: 100,
+                            title: "&#8364;",
+                            titlefont: { size: 20 },
+                        },
+                    }}
                 />
             </div>
-            <div>
+            <div className="YearPlotComparison">
                 <Plot
                     data={[
-                        {
-                            x: months,
-
-                            y: timeLineSavingsValue,
-
-                            type: "scatter",
-
-                            mode: "lines+markers",
-
-                            name: "SAVINGS",
-
-                            marker: { color: "red" },
-                        },
-                        {
-                            x: months,
-
-                            y: timeLineExpensesValue,
-
-                            type: "scatter",
-
-                            mode: "lines+markers",
-
-                            name: "Expenses",
-
-                            marker: { color: "blue" },
-                        },
                         {
                             x: months,
 
@@ -286,8 +284,47 @@ export default function YearPlots({ year }) {
 
                             marker: { color: "green" },
                         },
+
+                        {
+                            x: months,
+
+                            y: timeLineExpensesValue,
+
+                            type: "scatter",
+
+                            mode: "lines+markers",
+
+                            name: "EXPENSES",
+
+                            marker: { color: "blue" },
+                        },
+                        {
+                            x: months,
+
+                            y: timeLineSavingsValue,
+
+                            type: "scatter",
+
+                            mode: "lines+markers",
+
+                            name: "SAVINGS",
+
+                            marker: { color: "red" },
+                        },
                     ]}
-                    layout={{ width: 600, height: 400, margin: 0, padding: 0 }}
+                    layout={{
+                        autosize: false,
+                        width: 900,
+                        height: 500,
+                        margin: 0,
+                        padding: 0,
+                        font: { size: 18 },
+                        yaxis: {
+                            margin: 100,
+                            title: "&#8364;",
+                            titlefont: { size: 20 },
+                        },
+                    }}
                 />
             </div>
         </div>

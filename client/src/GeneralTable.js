@@ -76,6 +76,7 @@ export default function GeneralTable({
         { title: "Date", field: "date" },
         { title: "Amount", field: "amount", type: "numeric" },
         { title: "Category", field: "category" },
+        { title: "Action", field: "Action" },
     ];
 
     useEffect(() => {
@@ -195,16 +196,10 @@ export default function GeneralTable({
             style={{ maxWidth: "100%" }}
             className="container-form-transactions"
         >
-            {month ? (
-                <div>
-                    Your ar currently watching the data for month: {month}
-                </div>
-            ) : (
-                <div>
-                    Your ar currently watching the data for month:
-                    {defaultMonth}
-                </div>
-            )}
+            <div className="MonthText">
+                <p> {month} </p>
+            </div>
+
             <div className="form-data-selection">
                 <form
                     onSubmit={(event) => {
@@ -223,7 +218,7 @@ export default function GeneralTable({
                     </button>
                 </form>
             </div>
-            <div>
+            <div className="TableTransactionsContainer">
                 <p className="text-uppercase">Transactions</p>
                 {data.length ? (
                     <TableWithData
@@ -241,7 +236,7 @@ export default function GeneralTable({
                 )}
             </div>
 
-            <div>
+            <div className="TableTransactionsContainer">
                 <p className="text-uppercase">Income</p>
                 {dataIncome.length ? (
                     <TableWithDataIncome

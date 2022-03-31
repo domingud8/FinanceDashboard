@@ -80,20 +80,72 @@ export default function YearCapital({ year }) {
     }, [totalOutcomeCategory, totalIncome]);
 
     return (
-        <div>
-            <p> Hello {year} !!! </p>
-            <p>Total Income: {totalIncome}</p>
-            <p>Total Expenses: {totalOutcome}</p>
-            <p>Total Savings: {totalSavings}</p>
-
-            {totalOutcomeCategoryPercentage.map((item, index) => {
-                return (
-                    <li key={index}>
-                        {" "}
-                        {item.category} {item.total} ({item.percentage}%)
-                    </li>
-                );
-            })}
+        <div className="numbersContainer">
+            <div className="vertical">
+                <div className="verticalCell">
+                    <p> Summary in numbers</p>
+                </div>
+            </div>
+            <div className="numbers">
+                <div className="boxColor">
+                    <p>
+                        Total Income <br />
+                        <br /> <span> {totalIncome} &#8364;</span>
+                    </p>
+                </div>
+                <div className="boxColor">
+                    <p>
+                        Total Expenses <br /> <br />{" "}
+                        <span>
+                            {" "}
+                            {totalOutcome} &#8364; <br />{" "}
+                            <span className="red-text">
+                                (
+                                {((totalOutcome / totalIncome) * 100).toFixed(
+                                    2
+                                )}
+                                % ){" "}
+                            </span>
+                            <br />
+                        </span>
+                    </p>
+                </div>
+                <div className="boxColor">
+                    <p>
+                        Total Savings <br /> <br />
+                        <span>
+                            {" "}
+                            {totalSavings} &#8364;
+                            <br />{" "}
+                            <span className="red-text">
+                                (
+                                {((totalSavings / totalIncome) * 100).toFixed(
+                                    2
+                                )}
+                                % ){" "}
+                            </span>
+                            <br />
+                        </span>
+                    </p>
+                </div>
+            </div>
+            <div className="ListCategoryYearSummary">
+                <ul>
+                    {totalOutcomeCategoryPercentage.map((item, index) => {
+                        return (
+                            <li key={index}>
+                                {item.category}:{" "}
+                                <span>
+                                    {item.total} &#8364;{" "}
+                                    <span className="red-text">
+                                        ({item.percentage} %)
+                                    </span>
+                                </span>
+                            </li>
+                        );
+                    })}
+                </ul>
+            </div>
         </div>
     );
 }

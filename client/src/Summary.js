@@ -113,58 +113,75 @@ export default function Summary({ month, update }) {
         <div className="summary">
             {keys.length ? (
                 <div>
-                    <Plot
-                        data={[
-                            {
-                                type: "bar",
-                                y: keys,
-                                x: yValues,
-                                orientation: "h",
-                                marker: {
-                                    color: "rgba(50,171,96,0.6)",
-                                    line: {
-                                        color: "rgba(50,171,96,1.0)",
-                                        width: 2,
+                    <div className="MonthTextSummary">
+                        <p> {month} </p>
+                    </div>
+                    <div>
+                        <Plot
+                            data={[
+                                {
+                                    type: "bar",
+                                    y: keys,
+                                    x: yValues,
+                                    orientation: "h",
+                                    marker: {
+                                        color: "rgba(50,171,96,0.6)",
+                                        line: {
+                                            color: "rgba(50,171,96,1.0)",
+                                            width: 2,
+                                        },
                                     },
                                 },
-                            },
-                        ]}
-                        layout={{
-                            width: 400,
-                            height: 400,
-                            title: "Bar Char Horizontal Plot",
-                        }}
-                    />
-                    <Plot
-                        data={[
-                            {
-                                type: "bar",
-                                x: xValue,
-                                y: yValue,
+                            ]}
+                            layout={{
+                                autosize: false,
+                                margin: { l: 180, r: 10, b: 50, t: 50 },
+                                width: 550,
+                                height: 350,
+                                font: { size: 18 },
+                                xaxis: {
+                                    title: "&#8364;",
+                                    titlefont: { size: 20 },
+                                },
+                            }}
+                        />
+                        <Plot
+                            data={[
+                                {
+                                    type: "bar",
+                                    x: xValue,
+                                    y: yValue,
 
-                                marker: {
-                                    color: [
-                                        "rgba(158,202,225,0.5)",
-                                        "rgba(255,0,0,0.5)",
-                                        "rgba(255,140,0,0.7)",
-                                    ],
-                                    line: {
+                                    marker: {
                                         color: [
-                                            "rgb(158,202,225)",
-                                            "rgb(255,0,0)",
-                                            "rgb(255,140,0)",
+                                            "rgba(158,202,225,0.5)",
+                                            "rgba(255,0,0,0.5)",
+                                            "rgba(255,140,0,0.7)",
                                         ],
-                                        width: 1.5,
+                                        line: {
+                                            color: [
+                                                "rgb(158,202,225)",
+                                                "rgb(255,0,0)",
+                                                "rgb(255,140,0)",
+                                            ],
+                                            width: 1.5,
+                                        },
                                     },
                                 },
-                            },
-                        ]}
-                        layout={{
-                            width: 600,
-                            height: 400,
-                            title: "A plot",
-                        }}
-                    />
+                            ]}
+                            layout={{
+                                autosize: false,
+                                margin: { l: 80, r: 10, b: 50, t: 50 },
+                                width: 550,
+                                height: 350,
+                                font: { size: 18 },
+                                yaxis: {
+                                    title: "&#8364;",
+                                    titlefont: { size: 20 },
+                                },
+                            }}
+                        />
+                    </div>
                 </div>
             ) : (
                 <div></div>
@@ -187,16 +204,17 @@ export default function Summary({ month, update }) {
                                 leaf: { opacity: 0.4 },
                                 marker: { line: { width: 2 } },
                                 branchvalues: "total",
+                                texttemplate: "%{label}<br>%{value} &#8364;",
+                                hovertemplate: "%{percentParent:.1%}",
                             },
                         ]}
                         layout={{
-                            margin: { l: 0, r: 0, b: 0, t: 0 },
-
+                            margin: { l: 50, r: 10, b: 0, t: 10 },
                             width: 500,
-
                             height: 500,
                         }}
                     />
+                    ;
                 </div>
             ) : (
                 <div></div>

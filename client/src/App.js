@@ -45,7 +45,6 @@ export default function App() {
                                         onSelectMonth={onSelectMonth}
                                         defaultMonth={month}
                                         onUpdate={onUpdate}
-                                        update
                                     />
                                     <br /> <br />
                                     <TableAddData onUpdate={onUpdate} />
